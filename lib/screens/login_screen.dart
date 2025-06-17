@@ -1,3 +1,5 @@
+import 'package:cystella_patients/screens/home.dart';
+import 'package:cystella_patients/screens/register_screen.dart';
 import 'package:flutter/material.dart';
 import '../services/auth_service.dart';
 
@@ -30,7 +32,10 @@ class _LoginScreenState extends State<LoginScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Login successful")),
         );
-        Navigator.pushReplacementNamed(context, '/home');
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => MyHome()),
+        );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Login failed")),
@@ -71,7 +76,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
               TextButton(
                 onPressed: () {
-                  Navigator.pushReplacementNamed(context, '/register');
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => RegisterScreen()));
                 },
                 child: const Text("Don't have an account? Register"),
               )

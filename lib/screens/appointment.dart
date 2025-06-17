@@ -12,7 +12,7 @@ class BookAppointment extends StatefulWidget {
 }
 
 class _BookAppointmentState extends State<BookAppointment> {
-    int currentIndex = 2;
+  int currentIndex = 2;
   DateTime today = DateTime.now();
   final Map<DateTime, List<String>> bookedSlots = {};
   String? selectedTime;
@@ -166,7 +166,7 @@ class _BookAppointmentState extends State<BookAppointment> {
                             final min = minutes[index];
                             final h =
                                 selectedTime?.split(":")[0] ?? hours.first;
-                            final newTime = "$h:\$min";
+                            final newTime = "$h: $min";
                             if (getAvailableTimes(today).contains(newTime)) {
                               setState(() {
                                 selectedTime = newTime;
