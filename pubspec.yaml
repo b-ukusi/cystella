@@ -38,7 +38,8 @@ dependencies:
   intl: ^0.20.2
   date_time_format: ^2.0.1
   table_calendar: ^3.2.0
-
+  http: ^1.4.0
+  shared_preferences: ^2.5.3
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -91,3 +92,5 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+ 
+    
