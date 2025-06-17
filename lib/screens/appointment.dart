@@ -147,7 +147,7 @@ class _BookAppointmentState extends State<BookAppointment> {
                             childCount: hours.length,
                             builder: (context, index) => Center(
                               child: Text(
-                                '${hours[index]}',
+                                hours[index],
                                 style: TextStyle(fontSize: 24),
                               ),
                             ),
