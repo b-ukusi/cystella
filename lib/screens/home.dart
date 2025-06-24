@@ -13,7 +13,6 @@ class MyHome extends StatefulWidget {
   State<MyHome> createState() => _MyHomeState();
 }
 
-
 final List<Widget> screens = [
   MyDashboard(),
   MyDocs(),
@@ -29,13 +28,21 @@ class _MyHomeState extends State<MyHome> {
     return Scaffold(
       // backgroundColor: Colors.grey[800],
       body: IndexedStack(
+        index: currentIndex,
         children: screens,
       ),
       bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+          onTap: (index) {
+            
+            setState(() {
+              currentIndex = index;
+            });
+          },
           currentIndex: currentIndex,
-          selectedItemColor: CustomizedColors.textcolor2,
-          unselectedItemColor: Colors.grey[600],
-          // backgroundColor: Colors.grey[800],
+          selectedItemColor: Colors.black,
+          
+          
           items: [
             BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
             BottomNavigationBarItem(icon: Icon(Icons.folder), label: 'Docs'),

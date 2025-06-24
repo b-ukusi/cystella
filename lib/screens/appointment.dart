@@ -13,17 +13,19 @@ class BookAppointment extends StatefulWidget {
 
 class _BookAppointmentState extends State<BookAppointment> {
   int currentIndex = 2;
-  DateTime today = DateTime.now();
-  final Map<DateTime, List<String>> bookedSlots = {};
+  DateTime today = DateTime.now(); //to store the selected day
+  final Map<DateTime, List<String>> bookedSlots = {}; //tracks the booked times
   String? selectedTime;
 
   void _onDaySelected(DateTime day, DateTime focusedDay) {
     setState(() {
       today = DateTime(day.year, day.month, day.day);
-      selectedTime = null;
+      final available = getAvailableTimes(today);
+      selectedTime = available.isNotEmpty ? available.first : null;
     });
   }
 
+//shows the fully booked days
   bool _isFullyBooked(DateTime day) {
     final key = DateTime(day.year, day.month, day.day);
     return bookedSlots[key]?.length == 18;
@@ -57,18 +59,28 @@ class _BookAppointmentState extends State<BookAppointment> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    final available = getAvailableTimes(today);
+    if (available.isEmpty) {
+      selectedTime = available.first;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final availableTimes = getAvailableTimes(today);
     final hours = availableTimes.map((t) => t.split(":")[0]).toSet().toList();
     final minutes = ["00", "30"];
 
     return Scaffold(
-      backgroundColor: CustomizedColors.bgcolor,
       appBar: AppBar(
-        title: Center(child: Text('Book Appointment')),
-        backgroundColor: CustomizedColors.bgcolor,
-        foregroundColor: Colors.white,
-      ),
+          title: Center(
+              child: Text(
+            'Book Appointment',
+            style: GoogleFonts.poppins(fontWeight: FontWeight.w700),
+          )),
+          foregroundColor: Colors.black),
       body: Column(
         children: [
           TableCalendar(
@@ -78,7 +90,7 @@ class _BookAppointmentState extends State<BookAppointment> {
             rowHeight: 40,
             focusedDay: today,
             selectedDayPredicate: (day) => isSameDay(day, today),
-            firstDay: DateTime.utc(2025, 6, 13),
+            firstDay: today,
             lastDay: DateTime.utc(2026, 6, 13),
             onDaySelected: (day, focusedDay) {
               if (!_isFullyBooked(day) && day.weekday <= 5) {
@@ -91,12 +103,13 @@ class _BookAppointmentState extends State<BookAppointment> {
               defaultBuilder: (context, day, _) {
                 if (!_isFullyBooked(day) && day.weekday <= 5) {
                   return Container(
+                    width: 40,
                     decoration: BoxDecoration(
                       border: Border.all(
-                        color: CustomizedColors.bgcolor,
+                        color: CustomizedColors.primarycolor,
                         style: BorderStyle.solid,
                       ),
-                      borderRadius: BorderRadius.circular(6),
+                      borderRadius: BorderRadius.circular(20),
                     ),
                     child: Center(child: Text('${day.day}')),
                   );
@@ -106,90 +119,92 @@ class _BookAppointmentState extends State<BookAppointment> {
             ),
           ),
           SizedBox(height: 20),
-          Expanded(
-            child: Center(
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
-                    child: BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-                      child: Container(
-                        width: 220,
-                        height: 150,
-                        decoration: BoxDecoration(
-                          color: CustomizedColors.bgcolor.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(20),
+          if (availableTimes.isNotEmpty)
+            Expanded(
+              child: Center(
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+                        child: Container(
+                          width: 220,
+                          height: 150,
+                          decoration: BoxDecoration(
+                            color: CustomizedColors.bgcolor.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        height: 150,
-                        width: 80,
-                        child: ListWheelScrollView.useDelegate(
-                          itemExtent: 40,
-                          onSelectedItemChanged: (index) {
-                            final hour = hours[index];
-                            final possibleTimes =
-                                minutes.map((m) => "$hour:\$m").toList();
-                            selectedTime = possibleTimes.firstWhere(
-                              (t) => getAvailableTimes(today).contains(t),
-                              orElse: () => "",
-                            );
-                            setState(() {});
-                          },
-                          childDelegate: ListWheelChildBuilderDelegate(
-                            childCount: hours.length,
-                            builder: (context, index) => Center(
-                              child: Text(
-                                hours[index],
-                                style: TextStyle(fontSize: 24),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          height: 150,
+                          width: 80,
+                          child: ListWheelScrollView.useDelegate(
+                            itemExtent: 40,
+                            onSelectedItemChanged: (index) {
+                              final hour = hours[index];
+                              final possibleTimes =
+                                  minutes.map((m) => "$hour:$m").toList();
+                              selectedTime = possibleTimes.firstWhere(
+                                (t) => getAvailableTimes(today).contains(t),
+                                orElse: () => "",
+                              );
+                              setState(() {});
+                            },
+                            childDelegate: ListWheelChildBuilderDelegate(
+                              childCount: hours.length,
+                              builder: (context, index) => Center(
+                                child: Text(
+                                  hours[index],
+                                  style: TextStyle(fontSize: 24),
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                      SizedBox(width: 10),
-                      Text(":", style: TextStyle(fontSize: 28)),
-                      SizedBox(width: 10),
-                      SizedBox(
-                        height: 150,
-                        width: 80,
-                        child: ListWheelScrollView.useDelegate(
-                          itemExtent: 40,
-                          onSelectedItemChanged: (index) {
-                            final min = minutes[index];
-                            final h =
-                                selectedTime?.split(":")[0] ?? hours.first;
-                            final newTime = "$h: $min";
-                            if (getAvailableTimes(today).contains(newTime)) {
-                              setState(() {
-                                selectedTime = newTime;
-                              });
-                            }
-                          },
-                          childDelegate: ListWheelChildBuilderDelegate(
-                            childCount: minutes.length,
-                            builder: (context, index) => Center(
-                              child: Text(
-                                minutes[index],
-                                style: TextStyle(fontSize: 24),
+                        SizedBox(width: 10),
+                        Text(":", style: TextStyle(fontSize: 28)),
+                        SizedBox(width: 10),
+                        SizedBox(
+                          height: 150,
+                          width: 80,
+                          child: ListWheelScrollView.useDelegate(
+                            itemExtent: 40,
+                            onSelectedItemChanged: (index) {
+                              final min = minutes[index];
+                              final h =
+                                  selectedTime?.split(":")[0] ?? hours.first;
+                              final newTime = "$h:$min";
+                              if (getAvailableTimes(today).contains(newTime)) {
+                                setState(() {
+                                  selectedTime = newTime;
+                                });
+                              }
+                              // No available time slots for this day
+                            },
+                            childDelegate: ListWheelChildBuilderDelegate(
+                              childCount: minutes.length,
+                              builder: (context, index) => Center(
+                                child: Text(
+                                  minutes[index],
+                                  style: TextStyle(fontSize: 24),
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ],
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
           if (selectedTime != null) SizedBox(height: 20),
           Padding(
             padding: const EdgeInsets.all(16.0),
@@ -202,7 +217,7 @@ class _BookAppointmentState extends State<BookAppointment> {
               child: Text('Book $selectedTime Appointment'),
             ),
           ),
-          SizedBox(height: 100)
+          SizedBox(height: 20)
         ],
       ),
     );
