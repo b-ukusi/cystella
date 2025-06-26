@@ -1,5 +1,5 @@
 import 'package:cystella_patients/screens/appointment.dart';
-import 'package:cystella_patients/screens/chat.dart';
+import 'package:cystella_patients/screens/chatbot.dart';
 import 'package:cystella_patients/screens/dashboard.dart';
 import 'package:cystella_patients/screens/docs.dart';
 import 'package:cystella_patients/screens/settings.dart';
@@ -18,7 +18,7 @@ final List<Widget> screens = [
   MyDashboard(),
   MyDocs(),
   BookAppointment(),
-  ChatArea(),
+  ChatbotScreen(),
   Settings()
 ];
 

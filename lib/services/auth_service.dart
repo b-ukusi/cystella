@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
-  final String baseUrl = 'http://192.168.100.250:8000/api/auth';
+  final String baseUrl = 'http://10.2.8.65:8000/api/auth';
 
   Future<bool> register({
     required String email,
@@ -81,4 +81,25 @@ class AuthService {
       // Optional: handle error silently
     }
   }
+
+  Future<String?> sendChatMessage(String message) async {
+  final url = Uri.parse('$baseUrl/chat/'); // my Django chat endpoint
+
+  try {
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'message': message}),
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      return data['reply'];
+    } else {
+      return 'Something went wrong. Try again.';
+    }
+  } catch (e) {
+    return 'Error: $e';
+  }
+}
 }
