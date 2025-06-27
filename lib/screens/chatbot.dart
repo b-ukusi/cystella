@@ -1,16 +1,16 @@
+import 'package:cystella_patients/services/auth_service.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
-import '../services/auth_service.dart';
-
-class ChatBotScreen extends StatefulWidget {
-  const ChatBotScreen({super.key});
+class ChatbotScreen extends StatefulWidget {
+  const ChatbotScreen({super.key});
 
   @override
-  State<ChatBotScreen> createState() => _ChatBotScreenState();
+  State<ChatbotScreen> createState() => _ChatbotScreenState();
 }
 
-class _ChatBotScreenState extends State<ChatBotScreen> {
-  int currentIndex = 3;
+class _ChatbotScreenState extends State<ChatbotScreen> {
   final TextEditingController _controller = TextEditingController();
   final List<Map<String, String>> _messages = [];
 

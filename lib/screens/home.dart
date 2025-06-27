@@ -16,7 +16,7 @@ final List<Widget> screens = [
   MyDashboard(),
   MyDocs(),
   BookAppointment(),
-  ChatBotScreen(),
+  ChatbotScreen(),
   Settings()
 ];
 
@@ -31,17 +31,14 @@ class _MyHomeState extends State<MyHome> {
         children: screens,
       ),
       bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
+          type: BottomNavigationBarType.fixed,
           onTap: (index) {
-            
             setState(() {
               currentIndex = index;
             });
           },
           currentIndex: currentIndex,
           selectedItemColor: Colors.black,
-          
-          
           items: [
             BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
             BottomNavigationBarItem(icon: Icon(Icons.folder), label: 'Docs'),
