@@ -15,18 +15,20 @@ class AuthService {
   }) async {
     try {
       final url = Uri.parse('$baseUrl/register/');
-      final response = await http.post(
-        url,
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'email': email,
-          'first_name': first_name,
-          'last_name': last_name,
-          'contactno': contactno,
-          'date_of_birth': date_of_birth,
-          'password': password,
-        }),
-      ).timeout(const Duration(seconds: 10));
+      final response = await http
+          .post(
+            url,
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode({
+              'email': email,
+              'first_name': first_name,
+              'last_name': last_name,
+              'contactno': contactno,
+              'date_of_birth': date_of_birth,
+              'password': password,
+            }),
+          )
+          .timeout(const Duration(seconds: 10));
 
       if (response.statusCode == 201) {
         final data = jsonDecode(response.body);
@@ -46,14 +48,16 @@ class AuthService {
   }) async {
     try {
       final url = Uri.parse('$baseUrl/login/');
-      final response = await http.post(
-        url,
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'email': email,
-          'password': password,
-        }),
-      ).timeout(const Duration(seconds: 10));
+      final response = await http
+          .post(
+            url,
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode({
+              'email': email,
+              'password': password,
+            }),
+          )
+          .timeout(const Duration(seconds: 10));
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
@@ -79,6 +83,27 @@ class AuthService {
       await http.get(url).timeout(const Duration(seconds: 10));
     } catch (_) {
       // Optional: handle error silently
+    }
+  }
+
+  Future<String?> sendChatMessage(String message) async {
+    final url = Uri.parse('$baseUrl/chat/'); // my Django chat endpoint
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'message': message}),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        return data['reply'];
+      } else {
+        return 'Something went wrong. Try again.';
+      }
+    } catch (e) {
+      return 'Error: $e';
     }
   }
 }

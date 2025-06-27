@@ -226,6 +226,7 @@ class _MyDashboardState extends State<MyDashboard> {
                   controller: notesController,
                   decoration: const InputDecoration(
                     hintText: '+ Additional Notes',
+                    
                     border: OutlineInputBorder(),
                     contentPadding:
                         EdgeInsets.symmetric(horizontal: 12, vertical: 12),
