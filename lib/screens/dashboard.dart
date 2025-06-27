@@ -1,3 +1,4 @@
+import 'package:cystella_patients/screens/logsymptomscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -9,13 +10,13 @@ class MyDashboard extends StatefulWidget {
 }
 
 class _MyDashboardState extends State<MyDashboard> {
-   TextEditingController periodLengthController = TextEditingController();
+  TextEditingController periodLengthController = TextEditingController();
   DateTime selectedDate = DateTime.now();
   int cycleLength = 33;
   int periodStartDay = 15;
   int periodLength = 5;
   bool showLogPeriodDialog = false;
- 
+
   TextEditingController notesController = TextEditingController();
 
   String? selectedTitle;
@@ -52,8 +53,8 @@ class _MyDashboardState extends State<MyDashboard> {
   String getPeriodStatus() {
     final now = selectedDate;
     DateTime lastPeriodStart = DateTime(now.year, now.month, periodStartDay);
-    if(now.isBefore(lastPeriodStart)){
-      lastPeriodStart= lastPeriodStart.subtract(Duration(days: cycleLength));
+    if (now.isBefore(lastPeriodStart)) {
+      lastPeriodStart = lastPeriodStart.subtract(Duration(days: cycleLength));
     }
     // final periodStartDate =
     //     DateTime(now.year, now.month, periodStartDay); // Assuming current month
@@ -63,7 +64,7 @@ class _MyDashboardState extends State<MyDashboard> {
     //   diff += cycleLength;
     // }
 
-    int cycleDay = now.difference(lastPeriodStart).inDays +1;
+    int cycleDay = now.difference(lastPeriodStart).inDays + 1;
 
     if (cycleDay <= periodLength) {
       return "Period Day $cycleDay";
@@ -187,46 +188,70 @@ class _MyDashboardState extends State<MyDashboard> {
                   ),
                 ),
                 const SizedBox(height: 10),
-                Center(
-                  child: GestureDetector(
-                    onTap: () => setState(() => showLogPeriodDialog = true),
-                    child: Container(
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    GestureDetector(
+                      onTap: () => setState(() => showLogPeriodDialog = true),
+                      child: Container(
+                          width: 120,
+                          decoration: BoxDecoration(
+                              color: Colors.pink,
+                              borderRadius: BorderRadius.circular(20)),
+                          padding: const EdgeInsets.all(10),
+                          child: const Center(
+                            child: Text(
+                              "Log Period",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          )),
+                    ),
+                    SizedBox(width: 10),
+                    GestureDetector(
+                      child: Container(
                         width: 120,
                         decoration: BoxDecoration(
                             color: Colors.pink,
                             borderRadius: BorderRadius.circular(20)),
                         padding: const EdgeInsets.all(10),
-                        child: const Center(
-                          child: Text(
-                            "Log Period",
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        )),
-                  ),
+                        child: Row(
+                          children: [
+                            Icon(Icons.upload_file,
+                                color: Colors.white, size: 18),
+                                SizedBox(width:6),
+                            Text(
+                              "Upload Doc",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 20),
-                Text("Your Wellbeing",
-                    style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
-                Text("Log your symptoms today",
-                    style: GoogleFonts.poppins(fontWeight: FontWeight.w300)),
+                // Text("Your Wellbeing Area",
+                //     style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
+                // Text("Log your symptoms today",
+                //     style: GoogleFonts.poppins(fontWeight: FontWeight.w300)),
                 const SizedBox(height: 16),
-                buildDropdown(
-                    "How are you feeling today?",
-                    droptitles,
-                    selectedTitle,
-                    (val) => setState(() => selectedTitle = val)),
-                buildDropdown("Blood Intensity", droptitles2, selectedTitle2,
-                    (val) => setState(() => selectedTitle2 = val)),
-                buildDropdown("Appetite Changes", droptitles3, selectedTitle3,
-                    (val) => setState(() => selectedTitle3 = val)),
-                buildDropdown("Mood Today", droptitles4, selectedTitle4,
-                    (val) => setState(() => selectedTitle4 = val)),
+                LogSymptomsScreen(),
+                // buildDropdown(
+                //     "How are you feeling today?",
+                //     droptitles,
+                //     selectedTitle,
+                //     (val) => setState(() => selectedTitle = val)),
+                // buildDropdown("Blood Intensity", droptitles2, selectedTitle2,
+                //     (val) => setState(() => selectedTitle2 = val)),
+                // buildDropdown("Appetite Changes", droptitles3, selectedTitle3,
+                //     (val) => setState(() => selectedTitle3 = val)),
+                // buildDropdown("Mood Today", droptitles4, selectedTitle4,
+                //     (val) => setState(() => selectedTitle4 = val)),
                 Text("Notes"),
                 TextFormField(
                   controller: notesController,
                   decoration: const InputDecoration(
                     hintText: '+ Additional Notes',
-                    
                     border: OutlineInputBorder(),
                     contentPadding:
                         EdgeInsets.symmetric(horizontal: 12, vertical: 12),
@@ -281,7 +306,7 @@ class _MyDashboardState extends State<MyDashboard> {
                               icon: const Icon(Icons.close),
                               onPressed: () =>
                                   setState(() => showLogPeriodDialog = false),
-                            )
+                            ),
                           ],
                         ),
                         const SizedBox(height: 10),
@@ -301,7 +326,7 @@ class _MyDashboardState extends State<MyDashboard> {
                             if (length != null) {
                               setState(() {
                                 periodLength = length;
-                                cycleLength= 28+periodLength;
+                                cycleLength = 28 + periodLength;
                                 showLogPeriodDialog = false;
                               });
                             }
@@ -322,33 +347,33 @@ class _MyDashboardState extends State<MyDashboard> {
     );
   }
 
-  Widget buildDropdown(String label, List<String> items, String? selectedValue,
-      Function(String?) onChanged) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(label),
-        SizedBox(
-          width: 400,
-          height: 40,
-          child: DropdownButtonFormField<String>(
-            hint: const Text("Select below"),
-            value: selectedValue,
-            items: items
-                .map((title) => DropdownMenuItem<String>(
-                      value: title,
-                      child: Text(title),
-                    ))
-                .toList(),
-            onChanged: onChanged,
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(),
-              contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            ),
-          ),
-        ),
-        const SizedBox(height: 10),
-      ],
-    );
-  }
+  // Widget buildDropdown(String label, List<String> items, String? selectedValue,
+  //     Function(String?) onChanged) {
+  //   return Column(
+  //     crossAxisAlignment: CrossAxisAlignment.start,
+  //     children: [
+  //       Text(label),
+  //       SizedBox(
+  //         width: 400,
+  //         height: 40,
+  //         child: DropdownButtonFormField<String>(
+  //           hint: const Text("Select below"),
+  //           value: selectedValue,
+  //           items: items
+  //               .map((title) => DropdownMenuItem<String>(
+  //                     value: title,
+  //                     child: Text(title),
+  //                   ))
+  //               .toList(),
+  //           onChanged: onChanged,
+  //           decoration: const InputDecoration(
+  //             border: OutlineInputBorder(),
+  //             contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+  //           ),
+  //         ),
+  //       ),
+  //       const SizedBox(height: 10),
+  //     ],
+  //   );
+  // }
 }

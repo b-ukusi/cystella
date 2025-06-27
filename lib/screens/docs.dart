@@ -19,7 +19,6 @@ class _MyDocsState extends State<MyDocs> {
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
-            
             children: [
               ClipRRect(
                 child: Image.asset("images/image.png", width: 24, height: 24),
@@ -90,8 +89,20 @@ class _MyDocsState extends State<MyDocs> {
             children: [
               Text("Alerts & Notifications",
                   style: GoogleFonts.poppins(fontWeight: FontWeight.w700)),
-                  SizedBox(height:50),
-              Center(child: Text("No notifications yet"))
+              SizedBox(height: 50),
+              Center(
+                  child: Card(
+                color: Colors.pink[100],
+                elevation: 2,
+                margin: EdgeInsets.all(10),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16)),
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Text(
+                      "Hey there👋, need some guidance with the upload doc button? Worry not! Go to the period tracker app that you use and export your summary in settings. Click on Upload doc in the home screen and select that same document and that's it! Leave the rest to us."),
+                ),
+              ))
             ],
           )
         ],
