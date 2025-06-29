@@ -1,6 +1,7 @@
 import 'package:cystella_patients/screens/home.dart';
 import 'package:cystella_patients/screens/register_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../services/auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -47,22 +48,55 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Login")),
+      backgroundColor: Color(0xFFFFE1F2),
+      appBar: AppBar(
+          toolbarHeight: 100.0,
+          backgroundColor: Color(0xFFFFE1F2),
+          title: Column(
+            children: [
+              Center(
+                child: Container(
+                  child: Image.asset(
+                    "images/logo.png",
+                    width: 60,
+                    height: 60,
+                  ),
+                ),
+              ),
+              Text("CYSTELLA")
+            ],
+          )),
       body: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(50),
         child: Form(
           key: _formKey,
           child: ListView(
             children: [
+              Center(
+                child: Text("Welcome back aboard!",
+                    style: GoogleFonts.shantellSans(fontSize: 20)),
+              ),
+              SizedBox(
+                height: 10,
+              ),
               TextFormField(
                 controller: _emailController,
-                decoration: const InputDecoration(labelText: "Email"),
+                decoration: InputDecoration(
+                  labelStyle: TextStyle(color: Colors.black),
+                  labelText: "Email",
+                ),
                 validator: (value) =>
                     value!.isEmpty ? "Enter your email" : null,
               ),
+              SizedBox(
+                height: 10,
+              ),
               TextFormField(
                 controller: _passwordController,
-                decoration: const InputDecoration(labelText: "Password"),
+                decoration: const InputDecoration(
+                  labelText: "Password",
+                  labelStyle: TextStyle(color: Colors.black),
+                ),
                 obscureText: true,
                 validator: (value) =>
                     value!.isEmpty ? "Enter your password" : null,
@@ -71,9 +105,20 @@ class _LoginScreenState extends State<LoginScreen> {
               _isLoading
                   ? const Center(child: CircularProgressIndicator())
                   : ElevatedButton(
+                      style: ButtonStyle(
+                        // Removed iconColor as it's not a valid property for ElevatedButton
+                        backgroundColor:
+                            WidgetStateProperty.all(Color(0xFFFF2BA3)),
+                      ),
                       onPressed: _login,
-                      child: const Text("Login"),
+                      child: const Text(
+                        "Login",
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
+              SizedBox(
+                height: 10,
+              ),
               TextButton(
                 onPressed: () {
                   Navigator.pushReplacement(
@@ -81,7 +126,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       MaterialPageRoute(
                           builder: (context) => RegisterScreen()));
                 },
-                child: const Text("Don't have an account? Register"),
+                child: Text("Don't have an account? Register",
+                    style: GoogleFonts.shantellSans(
+                        decoration: TextDecoration.none, color: Colors.black)),
               )
             ],
           ),

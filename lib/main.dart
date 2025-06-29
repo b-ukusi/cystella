@@ -1,6 +1,6 @@
+// import 'package:cystella_patients/screens/home.dart';
 import 'package:cystella_patients/screens/home.dart';
 import 'package:flutter/material.dart';
-// import 'package:cystella_patients/screens/login_screen.dart';
 
 void main() {
   FlutterError.onError = (FlutterErrorDetails details) {
