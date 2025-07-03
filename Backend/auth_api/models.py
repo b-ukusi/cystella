@@ -1,5 +1,6 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
+from django.conf import settings
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager,User
 
 class PatientManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -31,3 +32,19 @@ class Patient(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+
+
+from django.db import models
+from django.contrib.auth.models import User
+
+class DoctorMessage(models.Model):
+    patient = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    doctor_name = models.CharField(max_length=100)
+    message = models.TextField()
+    document_url = models.URLField(blank=True, null=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"From {self.doctor_name} to {self.patient.email}"
+
+
