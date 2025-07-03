@@ -1,3 +1,4 @@
+import 'package:cystella_patients/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../services/auth_service.dart';
@@ -155,7 +156,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
               TextButton(
                 onPressed: () {
-                  Navigator.pushReplacementNamed(context, '/login');
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => LoginScreen()));
                 },
                 child: Text("Already have an account? Login",
                     style: GoogleFonts.shantellSans(

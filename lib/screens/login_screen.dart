@@ -2,6 +2,7 @@ import 'package:cystella_patients/screens/home.dart';
 import 'package:cystella_patients/screens/register_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../services/auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -18,6 +19,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
   bool _isLoading = false;
 
+  Future<void> saveEmail(String email) async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.setString('patient_email', email);
+  }
   void _login() async {
     if (_formKey.currentState!.validate()) {
       setState(() => _isLoading = true);
@@ -30,6 +35,7 @@ class _LoginScreenState extends State<LoginScreen> {
       setState(() => _isLoading = false);
 
       if (success) {
+        await saveEmail(_emailController.text);
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Login successful")),
         );

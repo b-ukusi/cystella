@@ -1,5 +1,5 @@
 // import 'package:cystella_patients/screens/home.dart';
-import 'package:cystella_patients/screens/home.dart';
+import 'package:cystella_patients/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -18,7 +18,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Cystella Patient App',
       debugShowCheckedModeBanner: false,
-      home: MyHome(),
+      home: LoginScreen(),
+      routes: {
+        '/login': (context) => LoginScreen(),
+      },
     );
   }
 }

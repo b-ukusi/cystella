@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
-  final String baseUrl = 'http://10.2.8.65:8000/api/auth';
+  final String baseUrl = 'http://192.168.8.101:8000/api/auth';
 
   Future<bool> register({
     required String email,
@@ -104,6 +104,29 @@ class AuthService {
       }
     } catch (e) {
       return 'Error: $e';
+    }
+  }
+  Future<List<Map<String, dynamic>>> getDoctorMessages(String email) async {
+   
+    try {
+      final cleanEmail = email.trim();
+      final url = Uri.parse('$baseUrl/messages/$cleanEmail/');
+      final response = await http.get(url);
+      print("🛰️ GET $url");
+      print("📥 Response Status: ${response.statusCode}");
+      print("📥 Response Body: ${response.body}");
+
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = jsonDecode(response.body);
+        return data.cast<Map<String, dynamic>>();
+      } else {
+        print('❌ Failed to load messages: ${response.statusCode}');
+        return [];
+      }
+    } catch (e) {
+      print('❌ Error loading messages: $e');
+      return [];
     }
   }
 }
