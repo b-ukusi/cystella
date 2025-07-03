@@ -19,7 +19,7 @@ class _SettingsState extends State<Settings> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             ClipRRect(
-              child: Image.asset("images/image.png"),
+              child: Image.asset("images/profile.png"),
             ),
             Text("Your Profile",
                 style: GoogleFonts.poppins(

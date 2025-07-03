@@ -2,6 +2,8 @@ import 'package:cystella_patients/screens/logsymptomscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../widgets/uploaddoc.dart';
+
 class MyDashboard extends StatefulWidget {
   const MyDashboard({super.key});
 
@@ -93,7 +95,7 @@ class _MyDashboardState extends State<MyDashboard> {
                       children: const [
                         CircleAvatar(
                           radius: 18,
-                          backgroundImage: AssetImage("images/image.png"),
+                          backgroundImage: AssetImage("images/profile.png"),
                         ),
                         SizedBox(width: 20),
                         Icon(Icons.notifications_active)
@@ -207,26 +209,27 @@ class _MyDashboardState extends State<MyDashboard> {
                           )),
                     ),
                     SizedBox(width: 10),
-                    GestureDetector(
-                      child: Container(
-                        width: 120,
-                        decoration: BoxDecoration(
-                            color: Colors.pink,
-                            borderRadius: BorderRadius.circular(20)),
-                        padding: const EdgeInsets.all(10),
-                        child: Row(
-                          children: [
-                            Icon(Icons.upload_file,
-                                color: Colors.white, size: 18),
-                                SizedBox(width:6),
-                            Text(
-                              "Upload Doc",
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
+                    // GestureDetector(
+                    //   child: Container(
+                    //     width: 120,
+                    //     decoration: BoxDecoration(
+                    //         color: Colors.pink,
+                    //         borderRadius: BorderRadius.circular(20)),
+                    //     padding: const EdgeInsets.all(10),
+                    //     child: Row(
+                    //       children: [
+                    //         Icon(Icons.upload_file,
+                    //             color: Colors.white, size: 18),
+                    //         SizedBox(width: 6),
+                    //         Text(
+                    //           "Upload Doc",
+                    //           style: TextStyle(color: Colors.white),
+                    //         ),
+                    //       ],
+                    //     ),
+                    //   ),
+                    // ),
+                    UploadDocumentButton(),
                   ],
                 ),
                 const SizedBox(height: 20),
