@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Cystella Patient App',
       debugShowCheckedModeBanner: false,
-      home: MyHome(),
+      home: LoginScreen(),
       routes: {
         '/login': (context) => LoginScreen(),
       },
