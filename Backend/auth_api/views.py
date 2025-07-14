@@ -72,9 +72,13 @@ class ChatAPIView(APIView):
             return Response({"error": "Message is required"}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
+            
             openai.api_key = settings.OPENAI_API_KEY  # Ensure you have set this environment variable in a .env file for security purposes
 
+            if not settings.OPENAI_API_KEY:
+                return Response({"error": "DEBUG: API key missing"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
             
+
             response = openai.ChatCompletion.create(
                 model="gpt-3.5-turbo",
                 messages=[
