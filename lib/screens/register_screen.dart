@@ -28,18 +28,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
       print('✅ Form validated');
       setState(() => _isLoading = true);
 
-      bool success = await AuthService().register(
-        email: _emailController.text,
-        first_name: firstnameController.text,
-        last_name: lastnameController.text,
-        contactno: _phoneController.text,
-        date_of_birth: _dobController.text,
-        password: _passwordController.text,
-      );
+      final result = await AuthService().register(
+      email: _emailController.text.trim(),
+      first_name: firstnameController.text.trim(),
+      last_name: lastnameController.text.trim(),
+      contactno: _phoneController.text.trim(),
+      date_of_birth: _dobController.text.trim(),
+      password: _passwordController.text.trim(),
+    );
 
       setState(() => _isLoading = false);
 
-      if (success) {
+      if (result['success']) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Registration successful")),
         );

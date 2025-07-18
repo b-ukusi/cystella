@@ -3,44 +3,53 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
-  final String baseUrl = 'http://10.2.8.84:8000/api/auth';
+  final String baseUrl = 'http://192.168.100.249:8000/api/auth';
 
-  Future<bool> register({
-    required String email,
-    required String first_name,
-    required String last_name,
-    required String contactno,
-    required String date_of_birth,
-    required String password,
-  }) async {
-    try {
-      final url = Uri.parse('$baseUrl/register/');
-      final response = await http
-          .post(
-            url,
-            headers: {'Content-Type': 'application/json'},
-            body: jsonEncode({
-              'email': email,
-              'first_name': first_name,
-              'last_name': last_name,
-              'contactno': contactno,
-              'date_of_birth': date_of_birth,
-              'password': password,
-            }),
-          )
-          .timeout(const Duration(seconds: 10));
+  Future<Map<String, dynamic>> register({
+  required String email,
+  required String first_name,
+  required String last_name,
+  required String contactno,
+  required String date_of_birth,
+  required String password,
+}) async {
+  try {
+    final url = Uri.parse('$baseUrl/register/');
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'email': email,
+        'first_name': first_name,
+        'last_name': last_name,
+        'contactno': contactno,
+        'date_of_birth': date_of_birth,
+        'password': password,
+      }),
+    ).timeout(const Duration(seconds: 10));
 
-      if (response.statusCode == 201) {
-        final data = jsonDecode(response.body);
-        await _saveTokens(data['access'], data['refresh']);
-        return true;
-      } else {
-        return false;
-      }
-    } catch (e) {
-      return false;
+    if (response.statusCode == 201) {
+      final data = jsonDecode(response.body);
+      await _saveTokens(data['access'], data['refresh']);
+      return {
+        'success': true,
+        'message': 'Registration successful'
+      };
+    } else {
+      final error = jsonDecode(response.body);
+      return {
+        'success': false,
+        'message': error['message'] ?? error.toString()
+      };
     }
+  } catch (e) {
+    return {
+      'success': false,
+      'message': 'An unexpected error occurred: $e'
+    };
   }
+}
+
 
   Future<bool> login({
     required String email,
@@ -78,7 +87,7 @@ class AuthService {
   }
 
   Future<void> testConnection() async {
-    final url = Uri.parse('http://192.168.100.250:8000/api/test/');
+    final url = Uri.parse('http://192.168.8.164:8000/api/test/');
     try {
       await http.get(url).timeout(const Duration(seconds: 10));
     } catch (_) {
