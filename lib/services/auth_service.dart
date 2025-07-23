@@ -3,53 +3,48 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
-  final String baseUrl = 'http://192.168.100.249:8000/api/auth';
+  final String baseUrl = 'http://127.0.0.1:8000/api/auth';
 
   Future<Map<String, dynamic>> register({
-  required String email,
-  required String first_name,
-  required String last_name,
-  required String contactno,
-  required String date_of_birth,
-  required String password,
-}) async {
-  try {
-    final url = Uri.parse('$baseUrl/register/');
-    final response = await http.post(
-      url,
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({
-        'email': email,
-        'first_name': first_name,
-        'last_name': last_name,
-        'contactno': contactno,
-        'date_of_birth': date_of_birth,
-        'password': password,
-      }),
-    ).timeout(const Duration(seconds: 10));
+    required String email,
+    required String first_name,
+    required String last_name,
+    required String contactno,
+    required String date_of_birth,
+    required String password,
+  }) async {
+    try {
+      final url = Uri.parse('$baseUrl/register/');
+      final response = await http
+          .post(
+            url,
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode({
+              'email': email,
+              'first_name': first_name,
+              'last_name': last_name,
+              'contactno': contactno,
+              'date_of_birth': date_of_birth,
+              'password': password,
+            }),
+          )
+          .timeout(const Duration(seconds: 10));
 
-    if (response.statusCode == 201) {
-      final data = jsonDecode(response.body);
-      await _saveTokens(data['access'], data['refresh']);
-      return {
-        'success': true,
-        'message': 'Registration successful'
-      };
-    } else {
-      final error = jsonDecode(response.body);
-      return {
-        'success': false,
-        'message': error['message'] ?? error.toString()
-      };
+      if (response.statusCode == 201) {
+        final data = jsonDecode(response.body);
+        await _saveTokens(data['access'], data['refresh']);
+        return {'success': true, 'message': 'Registration successful'};
+      } else {
+        final error = jsonDecode(response.body);
+        return {
+          'success': false,
+          'message': error['message'] ?? error.toString()
+        };
+      }
+    } catch (e) {
+      return {'success': false, 'message': 'An unexpected error occurred: $e'};
     }
-  } catch (e) {
-    return {
-      'success': false,
-      'message': 'An unexpected error occurred: $e'
-    };
   }
-}
-
 
   Future<bool> login({
     required String email,
@@ -71,6 +66,7 @@ class AuthService {
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         await _saveTokens(data['access'], data['refresh']);
+        await _saveUserDetails(data['user']);
         return true;
       } else {
         return false;
@@ -78,6 +74,14 @@ class AuthService {
     } catch (e) {
       return false;
     }
+  }
+
+  Future<void> _saveUserDetails(Map<String, dynamic> user) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('user_first_name', user['first_name'] ?? '');
+    await prefs.setString('user_last_name', user['last_name'] ?? '');
+    await prefs.setString('user_email', user['email'] ?? '');
+    await prefs.setString('user_contactno', user['contactno'] ?? '');
   }
 
   Future<void> _saveTokens(String access, String refresh) async {
@@ -115,8 +119,8 @@ class AuthService {
       return 'Error: $e';
     }
   }
+
   Future<List<Map<String, dynamic>>> getDoctorMessages(String email) async {
-   
     try {
       final cleanEmail = email.trim();
       final url = Uri.parse('$baseUrl/messages/$cleanEmail/');
@@ -124,7 +128,6 @@ class AuthService {
       print("🛰️ GET $url");
       print("📥 Response Status: ${response.statusCode}");
       print("📥 Response Body: ${response.body}");
-
 
       if (response.statusCode == 200) {
         final List<dynamic> data = jsonDecode(response.body);
