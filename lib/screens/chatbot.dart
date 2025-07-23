@@ -1,7 +1,5 @@
 import 'package:cystella_patients/services/auth_service.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 class ChatbotScreen extends StatefulWidget {
   const ChatbotScreen({super.key});

@@ -18,6 +18,12 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _passwordController = TextEditingController();
 
   bool _isLoading = false;
+  bool _obscureText = true;
+  void _toggleVisibility() {
+    setState(() {
+      _obscureText = !_obscureText;
+    });
+  }
 
   Future<void> saveEmail(String email) async {
   final prefs = await SharedPreferences.getInstance();
@@ -98,12 +104,19 @@ class _LoginScreenState extends State<LoginScreen> {
                 height: 10,
               ),
               TextFormField(
-                controller: _passwordController,
-                decoration: const InputDecoration(
+                controller: _passwordController,  
+                obscureText: _obscureText,                                                              
+                decoration: InputDecoration(
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _obscureText ? Icons.visibility_off : Icons.visibility,
+                    ),
+                    onPressed: _toggleVisibility,
+                  ),
                   labelText: "Password",
                   labelStyle: TextStyle(color: Colors.black),
                 ),
-                obscureText: true,
+                // obscureText: true,
                 validator: (value) =>
                     value!.isEmpty ? "Enter your password" : null,
               ),

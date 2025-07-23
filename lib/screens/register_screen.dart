@@ -21,6 +21,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _passwordController = TextEditingController();
 
   bool _isLoading = false;
+  bool _obscureText = true;
+  void _toggleVisibility() {
+    setState(() {
+      _obscureText = !_obscureText;
+    });
+  }
 
   void _register() async {
     print('🟡 Register function triggered');
@@ -29,13 +35,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
       setState(() => _isLoading = true);
 
       final result = await AuthService().register(
-      email: _emailController.text.trim(),
-      first_name: firstnameController.text.trim(),
-      last_name: lastnameController.text.trim(),
-      contactno: _phoneController.text.trim(),
-      date_of_birth: _dobController.text.trim(),
-      password: _passwordController.text.trim(),
-    );
+        email: _emailController.text.trim(),
+        first_name: firstnameController.text.trim(),
+        last_name: lastnameController.text.trim(),
+        contactno: _phoneController.text.trim(),
+        date_of_birth: _dobController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
 
       setState(() => _isLoading = false);
 
@@ -130,11 +136,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
               TextFormField(
                 controller: _passwordController,
-                decoration: const InputDecoration(
+                obscureText: _obscureText,
+                decoration: InputDecoration(
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _obscureText ? Icons.visibility_off : Icons.visibility,
+                    ),
+                    onPressed: _toggleVisibility,
+                  ),
                   labelText: "Password",
                   labelStyle: TextStyle(color: Colors.black),
                 ),
-                obscureText: true,
                 validator: (value) =>
                     value!.length < 6 ? "Minimum 6 characters" : null,
               ),
@@ -156,10 +168,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
               TextButton(
                 onPressed: () {
-                  Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => LoginScreen()));
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) => LoginScreen()));
                 },
                 child: Text("Already have an account? Login",
                     style: GoogleFonts.shantellSans(
