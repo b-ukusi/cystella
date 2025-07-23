@@ -1,6 +1,7 @@
 import 'package:cystella_patients/screens/logsymptomscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../widgets/uploaddoc.dart';
 
@@ -12,6 +13,7 @@ class MyDashboard extends StatefulWidget {
 }
 
 class _MyDashboardState extends State<MyDashboard> {
+  String greetingMessage = 'Loading...';
   TextEditingController periodLengthController = TextEditingController();
   DateTime selectedDate = DateTime.now();
   int cycleLength = 33;
@@ -52,6 +54,36 @@ class _MyDashboardState extends State<MyDashboard> {
     "Confused"
   ];
 
+  String getGreeting() {
+    final hour = DateTime.now().hour;
+    if (hour < 12) {
+      return 'Good Morning';
+    } else if (hour < 17) {
+      return 'Good Afternoon';
+    } else {
+      return 'Good Evening';
+    }
+  }
+
+  Future<String> getUserGreeting() async {
+    final prefs = await SharedPreferences.getInstance();
+    final firstName = prefs.getString('user_first_name') ?? '';
+    return '${getGreeting()}, $firstName';
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadGreeting();
+  }
+
+  void _loadGreeting() async {
+    String message = await getUserGreeting();
+    setState(() {
+      greetingMessage = message;
+    });
+  }
+
   String getPeriodStatus() {
     final now = selectedDate;
     DateTime lastPeriodStart = DateTime(now.year, now.month, periodStartDay);
@@ -82,14 +114,14 @@ class _MyDashboardState extends State<MyDashboard> {
       body: Stack(
         children: [
           SingleChildScrollView(
-            padding: const EdgeInsets.all(12.0),
+            padding: const EdgeInsets.all(20.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text("Good Morning, Boyani",
+                    Text(greetingMessage,
                         style: GoogleFonts.poppins(fontSize: 18)),
                     Row(
                       children: const [

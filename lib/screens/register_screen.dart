@@ -52,7 +52,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         Navigator.pushReplacementNamed(context, '/login');
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Registration failed")),
+          const SnackBar(content: Text("Registration failed. Try again")),
         );
       }
     }

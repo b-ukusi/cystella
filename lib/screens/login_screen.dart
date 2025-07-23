@@ -25,10 +25,17 @@ class _LoginScreenState extends State<LoginScreen> {
     });
   }
 
-  Future<void> saveEmail(String email) async {
-  final prefs = await SharedPreferences.getInstance();
-  await prefs.setString('patient_email', email);
+  @override
+  void initState() {
+    super.initState();
+    _loadSavedEmail();
   }
+
+  Future<void> saveEmail(String email) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('patient_email', email);
+  }
+
   void _login() async {
     if (_formKey.currentState!.validate()) {
       setState(() => _isLoading = true);
@@ -55,6 +62,13 @@ class _LoginScreenState extends State<LoginScreen> {
         );
       }
     }
+  }
+
+  void _loadSavedEmail() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _emailController.text = prefs.getString('user_email') ?? '';
+    });
   }
 
   @override
@@ -104,8 +118,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 height: 10,
               ),
               TextFormField(
-                controller: _passwordController,  
-                obscureText: _obscureText,                                                              
+                controller: _passwordController,
+                obscureText: _obscureText,
                 decoration: InputDecoration(
                   suffixIcon: IconButton(
                     icon: Icon(
