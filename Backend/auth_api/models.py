@@ -41,10 +41,10 @@ class DoctorMessage(models.Model):
     patient = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     doctor_name = models.CharField(max_length=100)
     message = models.TextField()
-    document_url = models.URLField(blank=True, null=True)
+    document = models.FileField(upload_to='documents/', null=True, blank=True)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"From {self.doctor_name} to {self.patient.email}"
+        return f"From {self.doctor_name} to {self.patient.email} at {self.timestamp}"
 
 

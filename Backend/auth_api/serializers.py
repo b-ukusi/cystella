@@ -21,7 +21,7 @@ class DoctorMessageSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = DoctorMessage
-        fields = ['patient_email', 'doctor_name', 'message', 'document_url', 'timestamp']
+        fields = ['patient_email', 'doctor_name', 'message', 'document', 'timestamp']
 
     def create(self, validated_data):
         email = validated_data.pop('patient_email')

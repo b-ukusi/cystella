@@ -11,6 +11,7 @@ from django.contrib.auth import authenticate
 from django.conf import settings
 from rest_framework_simplejwt.tokens import RefreshToken
 import requests
+from rest_framework.parsers import MultiPartParser, FormParser
 
 
 
@@ -60,7 +61,14 @@ class PatientLoginView(APIView):
             return Response({
                 'refresh': str(refresh),
                 'access': str(refresh.access_token),
-                'message': 'Login successful'
+                'message': 'Login successful',
+                'user':{
+                    'first_name': patient.first_name,
+                    'last_name': patient.last_name,
+                    'email': patient.email,
+                    'contactno': patient.contactno,
+                    'date_of_birth': str(patient.date_of_birth),
+                }
             })
         return Response({'error': 'Invalid email or password'}, status=status.HTTP_401_UNAUTHORIZED)
 
@@ -95,14 +103,19 @@ class ChatAPIView(APIView):
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class ReceiveDoctorMessage(APIView):
+    parser_classes = [MultiPartParser, FormParser]
+
     def post(self, request):
         serializer = DoctorMessageSerializer(data=request.data)
         if serializer.is_valid():
             print("✅ Valid data:", serializer.validated_data)
-            serializer.save()
-            return Response({"detail": "Message received successfully."}, status=status.HTTP_201_CREATED)
+            message = serializer.save()
+            return Response({
+                "detail": "Message received successfully.",
+                "document_url": message.document.url if message.document else None
+            }, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+    
 class GetMessagesForPatient(APIView):
     def get(self, request, email):
         messages = DoctorMessage.objects.filter(patient__email=email).order_by('-timestamp')
