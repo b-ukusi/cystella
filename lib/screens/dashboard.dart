@@ -127,7 +127,7 @@ class _MyDashboardState extends State<MyDashboard> {
                       children: const [
                         CircleAvatar(
                           radius: 18,
-                          backgroundImage: AssetImage("images/profile.png"),
+                          backgroundImage: AssetImage("assets/images/profile.png"),
                         ),
                         SizedBox(width: 20),
                         Icon(Icons.notifications_active)

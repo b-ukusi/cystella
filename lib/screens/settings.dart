@@ -89,7 +89,7 @@ class _SettingsState extends State<Settings> {
           Center(
             child: CircleAvatar(
               radius: 50,
-              backgroundImage: AssetImage("images/profile.png"),
+              backgroundImage: AssetImage("assets/images/profile.png"),
             ),
           ),
           const SizedBox(height: 20),
