@@ -1,21 +1,19 @@
 import 'package:cystella_patients/screens/home.dart';
 import 'package:cystella_patients/screens/register_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+// import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../services/auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
-
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  _LoginScreenState createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
 
   bool _isLoading = false;
   bool _obscureText = true;
@@ -29,6 +27,13 @@ class _LoginScreenState extends State<LoginScreen> {
   void initState() {
     super.initState();
     _loadSavedEmail();
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
   }
 
   Future<void> saveEmail(String email) async {
@@ -74,96 +79,153 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFFFE1F2),
-      appBar: AppBar(
-          toolbarHeight: 100.0,
-          backgroundColor: Color(0xFFFFE1F2),
-          title: Column(
-            children: [
-              Center(
-                child: Container(
+      backgroundColor: Colors.white,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: 80),
+                Center(
                   child: Image.asset(
-                    "images/logo.png",
-                    width: 60,
-                    height: 60,
+                    'assets/images/logo.png',
+                    width: 80,
+                    height: 80,
                   ),
                 ),
-              ),
-              Text("CYSTELLA")
-            ],
-          )),
-      body: Padding(
-        padding: const EdgeInsets.all(50),
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            children: [
-              Center(
-                child: Text("Welcome back aboard!",
-                    style: GoogleFonts.shantellSans(fontSize: 20)),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              TextFormField(
-                controller: _emailController,
-                decoration: InputDecoration(
-                  labelStyle: TextStyle(color: Colors.black),
-                  labelText: "Email",
-                ),
-                validator: (value) =>
-                    value!.isEmpty ? "Enter your email" : null,
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              TextFormField(
-                controller: _passwordController,
-                obscureText: _obscureText,
-                decoration: InputDecoration(
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      _obscureText ? Icons.visibility_off : Icons.visibility,
+                SizedBox(height: 30),
+                Center(
+                  child: Text(
+                    'Welcome back aboard!',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.pink[400],
                     ),
-                    onPressed: _toggleVisibility,
                   ),
-                  labelText: "Password",
-                  labelStyle: TextStyle(color: Colors.black),
                 ),
-                // obscureText: true,
-                validator: (value) =>
-                    value!.isEmpty ? "Enter your password" : null,
-              ),
-              const SizedBox(height: 20),
-              _isLoading
-                  ? const Center(child: CircularProgressIndicator())
-                  : ElevatedButton(
-                      style: ButtonStyle(
-                        // Removed iconColor as it's not a valid property for ElevatedButton
-                        backgroundColor:
-                            WidgetStateProperty.all(Color(0xFFFF2BA3)),
-                      ),
-                      onPressed: _login,
-                      child: const Text(
-                        "Login",
-                        style: TextStyle(color: Colors.white),
+                SizedBox(height: 40),
+                Text(
+                  'Email',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.grey[700],
+                  ),
+                ),
+                SizedBox(height: 8),
+                TextFormField(
+                  controller: _emailController,
+                  validator: (value) =>
+                      value!.isEmpty ? "Enter your email" : null,
+                  decoration: InputDecoration(
+                    hintText: 'Enter your email',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: Colors.grey[300]!),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: Colors.pink[400]!),
+                    ),
+                    contentPadding:
+                        EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  ),
+                  keyboardType: TextInputType.emailAddress,
+                ),
+                SizedBox(height: 20),
+                Text(
+                  'Password',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.grey[700],
+                  ),
+                ),
+                SizedBox(height: 8),
+                TextFormField(
+                  controller: _passwordController,
+                  obscureText: _obscureText,
+                  validator: (value) =>
+                      value!.isEmpty ? "Enter your password" : null,
+                  decoration: InputDecoration(
+                    suffixIcon: IconButton(
+                        onPressed: _toggleVisibility,
+                        icon: Icon(_obscureText
+                            ? Icons.visibility_off
+                            : Icons.visibility)),
+                    hintText: 'Enter your password',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: Colors.grey[300]!),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: Colors.pink[400]!),
+                    ),
+                    contentPadding:
+                        EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  ),
+                ),
+                SizedBox(height: 30),
+                SizedBox(
+                  width: double.infinity,
+                  child: _isLoading
+                      ? Center(
+                          child: CircularProgressIndicator(
+                            color: Colors.pink[400],
+                          ),
+                        )
+                      : ElevatedButton(
+                          onPressed: _login,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.pink[400],
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            padding: EdgeInsets.symmetric(vertical: 16),
+                          ),
+                          child: Text(
+                            'Login',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                ),
+                SizedBox(height: 20),
+                Center(
+                  child: TextButton(
+                    onPressed: () {
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => RegisterScreen()));
+                    },
+                    child: Text.rich(
+                      TextSpan(
+                        text: "Don't have an account? ",
+                        style: TextStyle(color: Colors.grey[700]),
+                        children: [
+                          TextSpan(
+                            text: 'Register',
+                            style: TextStyle(
+                              color: Colors.pink[400],
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-              SizedBox(
-                height: 10,
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => RegisterScreen()));
-                },
-                child: Text("Don't have an account? Register",
-                    style: GoogleFonts.shantellSans(
-                        decoration: TextDecoration.none, color: Colors.black)),
-              )
-            ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
