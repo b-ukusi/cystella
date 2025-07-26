@@ -3,6 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:cystella_patients/services/auth_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_web_browser/flutter_web_browser.dart';
+
 
 class MyDocs extends StatefulWidget {
   const MyDocs({super.key});
@@ -59,15 +61,34 @@ String formatTimestamp(String? raw) {
 }
 
 
-  Future<void> openUrl(String url) async {
-    if (await canLaunchUrl(Uri.parse(url))) {
-      await launchUrl(Uri.parse(url));
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Could not open document')),
-      );
-    }
+  Future<void> launchDocument(BuildContext context, String relativeUrl) async {
+  const String baseUrl = 'http://10.2.8.51:8000';
+  final String fullUrl = '$baseUrl$relativeUrl';
+
+  print('🌐 Launching via flutter_web_browser: $fullUrl');
+
+  try {
+    await FlutterWebBrowser.openWebPage(
+      url: fullUrl.trim(),
+      customTabsOptions: const CustomTabsOptions(
+        colorScheme: CustomTabsColorScheme.dark,
+        showTitle: true,
+      ),
+      safariVCOptions: const SafariViewControllerOptions(
+        barCollapsingEnabled: true,
+        preferredBarTintColor: Colors.black,
+        preferredControlTintColor: Colors.white,
+      ),
+    );
+  } catch (e) {
+    print("❌ Failed to launch: $e");
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Could not open document')),
+    );
   }
+}
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +105,7 @@ String formatTimestamp(String? raw) {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Image.asset("images/profile.png", width: 24, height: 24),
+                    Image.asset("assets/images/profile.png", width: 24, height: 24),
                     const SizedBox(width: 20),
                     const Icon(Icons.notifications_active),
                   ],
@@ -156,10 +177,13 @@ String formatTimestamp(String? raw) {
                                     ),
                                     const SizedBox(height: 6),
                                     // Document link (if exists)
-                                    if (msg['document_url'] != null &&
-                                        msg['document_url'].toString().isNotEmpty)
+                                    if (msg['document'] != null &&
+                                        msg['document'].toString().isNotEmpty)
                                       TextButton.icon(
-                                        onPressed: () => openUrl(msg['document_url']),
+                                        onPressed: (){
+                                          print('📎 Document path: ${msg['document']}'); // <-- Add this line
+                                          launchDocument(context, msg['document']);
+                                        },
                                         icon: Icon(Icons.picture_as_pdf, color: Colors.pink[300]),
                                         label: Text(
                                           "View Document",
